@@ -54,12 +54,12 @@
 
             convert_csv($csv->titles, $csv->data);
 
-            print_r($csv->titles);
-            print_r($csv->data[0]);
+            // print_r($csv->titles);
+            // print_r($csv->data[0]);
 
-            // $csv->output("kingmobi-converted.csv");
+            $csv->output("kingmobi-converted.csv");
             
-            // header("Location: index.php"); 
+            header("Location: index.php"); 
             exit;
         }
         
