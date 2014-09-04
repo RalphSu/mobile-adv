@@ -28,7 +28,7 @@ almobi network
       <br>
       <p><span class="endtime">end time:</span> 
       <input  name="endtime" id="endtime" type="text" readonly="readonly"  
-       onclick="WdatePicker({dateFmt:'yyyy-MM-dd',lang:'zh-cn',maxDate:'#F{$dp.$D(\'starttime\',{M:1})}',minDate:'#F{$dp.$D(\'starttime\')}'}) " >  
+       onclick="WdatePicker({dateFmt:'yyyy-MM-dd',lang:'zh-cn',maxDate:'%y-%M-%d',minDate:'#F{$dp.$D(\'starttime\')}'}) " >  
       </p>
       <br>     
       <p><span class="platform">platform:</span> 
