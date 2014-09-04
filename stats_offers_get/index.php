@@ -15,21 +15,20 @@ almobi network
     <title>almobinetwork offers & stats</title>
   </head>
   <body>
-    <h1>Almobi network</h1>
-    
+    <IMG src="almobi_logo.jpg" border=0 width="478" height="150">
     <script type="text/javascript" type="text/javascript" src="My97DatePicker/WdatePicker.js"></script>
     <div style="text-align: left">
       <form action="query_handle.php" method="get">
       <br>	
       <p><span class="starttime">start time:</span> 
        <input  name="starttime" id="starttime" type="text"readonly="readonly" 
-        onclick="WdatePicker({dateFmt:'yyyy-MM-dd',lang:'zh-cn',maxDate:'%y-%M-%d',minDate:'%y-%M-<%=a%>{%d-2}'}) " >      
+        onclick="WdatePicker({dateFmt:'yyyy-MM-dd',lang:'zh-cn',maxDate:'%y-%M-%d',minDate:'2013-01-01'}) " >      
       </p>
       
       <br>
       <p><span class="endtime">end time:</span> 
       <input  name="endtime" id="endtime" type="text" readonly="readonly"  
-       onclick="WdatePicker({dateFmt:'yyyy-MM-dd',lang:'zh-cn',maxDate:'%y-%M-%d',minDate:'#F{$dp.$D(\'starttime\')}'}) " >  
+       onclick="WdatePicker({dateFmt:'yyyy-MM-dd',lang:'zh-cn',maxDate:'#F{$dp.$D(\'starttime\',{M:1})}',minDate:'#F{$dp.$D(\'starttime\')}'}) " >  
       </p>
       <br>     
       <p><span class="platform">platform:</span> 
@@ -47,7 +46,7 @@ almobi network
       </p>
       <br>
       <p><span class="format">Format:</span>  
-      <input name="format" type="radio" value="CSV">CSV<input name="format" type="radio" value="JSON">JSON<input name="format" type="radio" value="XML">XML
+      <input name="format" type="radio" value="CSV" checked>CSV<input name="format" type="radio" value="JSON" disabled>JSON<input name="format" type="radio" value="XML" disabled>XML
       </p>
       <br>
       <input type="submit" class="btn" value="Go" name="submit">
