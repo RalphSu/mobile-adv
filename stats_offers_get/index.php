@@ -15,7 +15,7 @@ almobi network
     <title>almobinetwork offers & stats</title>
   </head>
   <body>
-    <IMG src="almobi_logo.jpg" border=0 width="478" height="150">
+    <h1>ALMOBI NETWORK</h1>
     <script type="text/javascript" type="text/javascript" src="My97DatePicker/WdatePicker.js"></script>
     <div style="text-align: left">
       <form action="query_handle.php" method="get">
