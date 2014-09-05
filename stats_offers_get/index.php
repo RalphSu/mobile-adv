@@ -2,8 +2,7 @@
 
 index.php
 
-almobi network 
-
+ALMOBI NETWORK
 
 -->
 
