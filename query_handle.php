@@ -1,5 +1,6 @@
 
    <?php
+    // setlocale(LC_ALL, ‘zh_CN);
     /**
      * almobi network
      */
@@ -16,8 +17,8 @@
     // if username and password were submitted, check them
      if (isset($_GET['starttime']) && isset($_GET['endtime'])&& isset($_GET['platform'])&& isset($_GET['object'])&& isset($_GET['format']))
      {
-     	  $starttime = $_GET['starttime'];
-     	  $endtime = $_GET['endtime'];
+     	$starttime = $_GET['starttime'];
+     	$endtime = $_GET['endtime'];
      	  
         if ($_GET['platform'] == PLATFORM_KINGMOBI)
         {
@@ -44,23 +45,23 @@
             }
              
 
-            $url="http://partner.kingmb.com/$object/$object.$format?api_key=AFF2GuFVQ9micjsTlEWQMr57jKG7yX&start_date=$starttime&end_date=$endtime";
+            $url="http://partner.kingmb.com/$object/$object.$format?api_key=AFF2GuFVQ9micjsTlEWQMr57jKG7yX&start_date=$starttime&end_date=$endtime&limit=1";
             $origin_csv = file_get_contents($url);
             // print_r($origin_csv);
      
             $csv = new parseCSV();
             $csv->delimiter=",";
-            $csv->auto($origin_csv);
+            // $csv->input_encoding="utf-8";
+            // $csv->output_encoding="utf-8";
+            $csv->encoding("utf-8", "utf-8");
+            $csv->parse($origin_csv);
 
-            convert_csv($csv->titles, $csv->data);
+            convert_csv($csv);
 
-            // print_r($csv->titles);
-            // print_r($csv->data[0]);
-
-            $csv->output("kingmobi-converted.csv");
+            // $csv->output("kingmobi-converted.csv");
             
-            header("Location: index.php"); 
-            exit;
+            // header("Location: index.php"); 
+            //exit;
         }
         
         if ($_GET['platform'] == PLATFORM_ALMOBI)
@@ -93,40 +94,61 @@
         require_approval -> 0 (set to the default value) 
 */
      
-function convert_csv(&$titles, &$data) 
+function convert_csv(&$csv)
 {
-    for ($i = 0; $i < count($titles); ++$i) 
+    $titles = $csv->titles;
+    $data = $csv->data;
+    $name_map = array();
+    $name_map["tracking_url"] = "offer_url";
+    $name_map["payout"] = "max_payout";
+    $name_map["countries_short"] = "country_codes";
+    $name_map[$titles[0]] = "id";
+
+    for ($i = 0; $i < count($titles); ++$i)
     {
-        if ($titles[$i] == "tracking_url")
-        {
-            $titles[$i] = "offer_url";
+        if (array_key_exists($titles[$i], $name_map)) {
+            $titles[$i] = $name_map[$titles[$i]];
         }
-        if ($titles[$i] == "payout_type")
-        {
-            $titles[$i] = "default_payout";
-        }
-        if ($titles[$i] == "countries_short")
-        {
-            $titles[$i] = "country_codes";
-        }
-        // no deleted
     }
-    $titles[0]="id";
-
     // print_r($titles);
+    array_push($titles, "advertiser_id", "status", "revenue_type", "default_payout", "conversion_cap", "session_hours", "require_approval");
+    //print_r($titles);
+    $csv->titles= $titles;
 
-    array_push($titles, "advertiser_id", "status", "revenue_type", "max_payout", "session_hours", "require_approval");
+    $newData = array();
     for ($i = 0; $i < count($data); ++$i) 
     {
         $row = $data[$i];
-        array_push($row, "advertiser_id-default", "pending", "revenue_type-default", "max_payout-default", "720", "0");
+
+        foreach ($name_map as $oldKey=> $newKey) {
+            $row[$newKey] = $row[$oldKey];
+        }
+
+        // add additional row
+        $row["advertiser_id"] = "advertiser_id-default";
+        $row["status"] = "pending";
+        $row["revenue_type"] = "cpa_flat";
+        $row["default_payout"] = "0.86";// TODO
+        $row["conversion_cap"] = "5";
+        $row["session_hours"] = "720";
+        $row["require_approval"] = "1";
+
+        // foreach ($row as $key => $value) {
+        //     print_r("<br/>key:"); print_r($key); print_r("<br/>value:"); print_r($value);
+        // }
+        array_push($newData, $row);
+        // print_r("<br/><br/>");
+        // print_r("<!--");
+        // print_r($row["description"]);
+        // print_r("-->");
+        // print_r(array_keys($row));
     }
+    // print_r("<!--");
+    // print_r($newData); 
+    $csv->data = $newData;
+    // print_r($csv->data);
 }
 
     ?>
-
-
-
-
 
 

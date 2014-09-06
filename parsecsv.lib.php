@@ -861,9 +861,18 @@ class parseCSV {
 
         // create data
         foreach ($data as $key => $row) {
-            foreach ($row as $field => $value) {
-                $entry[] = $this->_enclose_value($value, $delimiter);
+
+            foreach ($fields as $key => $value) {
+                if (array_key_exists($value, $row)) {
+                    $entry[] = $this->_enclose_value($row[$value], $delimiter);
+                } else {
+                    $entry[] = $this->_enclose_value("", $delimiter);
+                }
             }
+
+            // foreach ($row as $field => $value) {
+            //     $entry[] = $this->_enclose_value($value, $delimiter);
+            // }
 
             $string .= implode($delimiter, $entry).$this->linefeed;
             $entry   = array();
