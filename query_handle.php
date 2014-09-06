@@ -1,6 +1,4 @@
-
-   <?php
-    // setlocale(LC_ALL, ‘zh_CN);
+<?php
     /**
      * almobi network
      */
@@ -45,23 +43,21 @@
             }
              
 
-            $url="http://partner.kingmb.com/$object/$object.$format?api_key=AFF2GuFVQ9micjsTlEWQMr57jKG7yX&start_date=$starttime&end_date=$endtime&limit=1";
+            $url="http://partner.kingmb.com/$object/$object.$format?api_key=AFF2GuFVQ9micjsTlEWQMr57jKG7yX&start_date=$starttime&end_date=$endtime";
             $origin_csv = file_get_contents($url);
             // print_r($origin_csv);
-     
+
             $csv = new parseCSV();
             $csv->delimiter=",";
-            // $csv->input_encoding="utf-8";
-            // $csv->output_encoding="utf-8";
             $csv->encoding("utf-8", "utf-8");
             $csv->parse($origin_csv);
 
             convert_csv($csv);
 
-            // $csv->output("kingmobi-converted.csv");
-            
-            // header("Location: index.php"); 
-            //exit;
+            $content = $csv->output("kingmb-convert.csv");
+
+            header("Location: index.php"); 
+            exit;
         }
         
         if ($_GET['platform'] == PLATFORM_ALMOBI)
@@ -148,7 +144,6 @@ function convert_csv(&$csv)
     $csv->data = $newData;
     // print_r($csv->data);
 }
-
-    ?>
+?>
 
 
