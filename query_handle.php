@@ -50,7 +50,6 @@
             $origin_csv = iconv("utf-8", "gb2312//IGNORE",$origin_csv); 
             $csv = new parseCSV();
             $csv->delimiter=",";
-            $csv->encoding("utf-8", "utf-8");
             $csv->parse($origin_csv);
 
             convert_csv($csv);
