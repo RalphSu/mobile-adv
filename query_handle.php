@@ -106,6 +106,15 @@ function convert_csv(&$csv)
             $titles[$i] = $name_map[$titles[$i]];
         }
     }
+    // remove: ID, countries
+    if(($key = array_search("id", $titles)) !== false) {
+        unset($titles[$key]);
+    }
+    if(($key = array_search("countries", $titles)) !== false) {
+        unset($titles[$key]);
+    }
+    // DATE: YYYY-MM-DD
+
     // print_r($titles);
     array_push($titles, "advertiser_id", "status", "revenue_type", "default_payout", "conversion_cap", "session_hours", "require_approval");
     //print_r($titles);
