@@ -130,7 +130,7 @@ function convert_csv(&$csv)
             $row["default_payout"] = "0.86";
         }
         $row["conversion_cap"] = "5";
-        $row["session_hours"] = "720";
+        $row["session_hours"] = "672";
         $row["require_approval"] = "1";
 
         $row["offer_url"] = $row["offer_url"]."&aff_sub={transaction_id}";
