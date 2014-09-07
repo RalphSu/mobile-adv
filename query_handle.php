@@ -121,13 +121,19 @@ function convert_csv(&$csv)
         }
 
         // add additional row
-        $row["advertiser_id"] = "advertiser_id-default";
+        $row["advertiser_id"] = "508"; // current all is kingmb
         $row["status"] = "pending";
         $row["revenue_type"] = "cpa_flat";
-        $row["default_payout"] = "0.86";// TODO
+        if (array_key_exists("max_payout", $row)) {
+            $row["default_payout"] = $row["max_payout"];
+        } else {
+            $row["default_payout"] = "0.86";
+        }
         $row["conversion_cap"] = "5";
         $row["session_hours"] = "720";
         $row["require_approval"] = "1";
+
+        $row["offer_url"] = $row["offer_url"]."&aff_sub={transaction_id}";
 
         // foreach ($row as $key => $value) {
         //     print_r("<br/>key:"); print_r($key); print_r("<br/>value:"); print_r($value);
