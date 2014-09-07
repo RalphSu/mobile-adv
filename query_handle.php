@@ -47,6 +47,7 @@
             $origin_csv = file_get_contents($url);
             // print_r($origin_csv);
 
+            $origin_csv = iconv("utf-8", "gb2312//IGNORE",$origin_csv); 
             $csv = new parseCSV();
             $csv->delimiter=",";
             $csv->encoding("utf-8", "utf-8");
