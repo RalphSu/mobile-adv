@@ -47,7 +47,7 @@
             $origin_csv = file_get_contents($url);
             // print_r($origin_csv);
 
-            $origin_csv = iconv("utf-8", "gb2312//IGNORE",$origin_csv); 
+            //$origin_csv = iconv("utf-8", "gb2312//IGNORE",$origin_csv); 
             $csv = new parseCSV();
             $csv->delimiter=",";
             $csv->parse($origin_csv);
@@ -111,6 +111,12 @@ function convert_csv(&$csv)
         unset($titles[$key]);
     }
     if(($key = array_search("countries", $titles)) !== false) {
+        unset($titles[$key]);
+    }
+    if(($key = array_search("categories", $titles)) !== false) {
+        unset($titles[$key]);
+    }
+    if(($key = array_search("country_codes", $titles)) !== false) {
         unset($titles[$key]);
     }
     // DATE: YYYY-MM-DD
