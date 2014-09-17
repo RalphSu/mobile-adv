@@ -3,68 +3,123 @@
      * almobi network
      */
      define("PLATFORM_KINGMOBI", "KINGMOBI");
-     define("PLATFORM_ALMOBI", "ALMOBI");
+     define("PLATFORM_RAINYDAY", "RAINYDAY");
      define("OBJECT_OFFERS", "OFFERS");
      define("OBJECT_STATS", "STATS");
      define("CSV_FORMAT", "CSV");
      define("XML_FORMAT", "XML");
      define("JSON_FORMAT", "JSON");
-   
-    require_once "parsecsv.lib.php";
+     
+     require_once "parsecsv.lib.php";
        
     // if username and password were submitted, check them
-     if (isset($_GET['starttime']) && isset($_GET['endtime'])&& isset($_GET['platform'])&& isset($_GET['object'])&& isset($_GET['format']))
+     if (isset($_GET['platform'])&& isset($_GET['checkbox'])&& isset($_GET['format']))
      {
-     	$starttime = $_GET['starttime'];
-     	$endtime = $_GET['endtime'];
-     	  
-        if ($_GET['platform'] == PLATFORM_KINGMOBI)
+     	
+       if ($_GET['format'] == CSV_FORMAT)
+          {
+          	$format = "csv";
+           }     
+       if ($_GET['format'] == XML_FORMAT)
+          {
+          	$format = "xml";
+           }
+          
+       if ($_GET['format'] == JSON_FORMAT)
+          {
+          	$format = "json";
+           }
+           
+       if ($_GET['platform'] == PLATFORM_KINGMOBI)
         {
-            if ($_GET['object'] == OBJECT_OFFERS)
+     	   $platform = "kingmobi";
+     	  
+     	   if ($_GET['checkbox'] == OBJECT_OFFERS)
             {
             	$object = "offers";
+            	$url="http://partner.kingmb.com/$object/$object.$format?api_key=AFF2GuFVQ9micjsTlEWQMr57jKG7yX";
             }     
-            if ($_GET['object'] == OBJECT_STATS)
+         if ($_GET['checkbox'] == OBJECT_STATS)
             {
-            	$object = stats;
-            }
-            if ($_GET['format'] == CSV_FORMAT)
-            {
-            	$format = "csv";
-            }     
-            if ($_GET['format'] == XML_FORMAT)
-            {
-            	$format = xml;
-            }
-            
-            if ($_GET['format'] == JSON_FORMAT)
-            {
-            	$format = json;
+            	if(isset($_GET['starttime']) && isset($_GET['endtime']))
+            	 {
+            	 	 	$starttime = $_GET['starttime'];
+     	            $endtime = $_GET['endtime'];
+            	 }
+            	 else
+            	 {
+            	 	  header("Location: index.php"); 
+      
+                   exit;    
+            	 }
+            	
+          	  $object = "stats";
+          	  $url="http://partner.kingmb.com/$object/$object.$format?api_key=AFF2GuFVQ9micjsTlEWQMr57jKG7yX&start_date=$starttime&end_date=$endtime";
             }
              
-
-            $url="http://partner.kingmb.com/$object/$object.$format?api_key=AFF2GuFVQ9micjsTlEWQMr57jKG7yX&start_date=$starttime&end_date=$endtime";
-            $origin_csv = file_get_contents($url);
-            // print_r($origin_csv);
-
-            //$origin_csv = iconv("utf-8", "gb2312//IGNORE",$origin_csv); 
-            $csv = new parseCSV();
-            $csv->delimiter=",";
-            $csv->parse($origin_csv);
-
-            convert_csv($csv);
-
-            $content = $csv->output("kingmb-convert.csv");
-
-            header("Location: index.php"); 
-            exit;
         }
         
-        if ($_GET['platform'] == PLATFORM_ALMOBI)
-        {             
-            header("Location: index.php");
-            exit;
-        }
+        
+       
+        
+        if ($_GET['platform'] == PLATFORM_RAINYDAY)
+        {
+     	   $platform = "rainyday";
+     	   
+     	   if ($_GET['checkbox'] == OBJECT_OFFERS)
+            {
+            	$object = "offers";
+            		
+            	$url="http://network.rainydaymarketing.com/offers/offers.csv?api_key=AFFGFeCV7LJZ9Cc4i2Dco0dkWknlAR";
+            	
+            	
+            }     
+         if ($_GET['checkbox'] == OBJECT_STATS)
+            {
+            		if(isset($_GET['starttime']) && isset($_GET['endtime']))
+            	 {
+            	 	 	$starttime = $_GET['starttime'];
+     	            $endtime = $_GET['endtime'];
+            	 }
+            	 else
+            	 {
+            	 	  header("Location: index.php"); 
+      
+                   exit;    
+            	 }
+          	  $object = "stats";
+          	  $url="http://network.rainydaymarketing.com/$object/$object.$format?api_key=AFFGFeCV7LJZ9Cc4i2Dco0dkWknlAR&start_date=$starttime&end_date=$endtime";
+                      
+            }
+             
+        }       
+
+        $opts = array(  
+          'http'=>array(  
+          'method'=>"GET",  
+          'timeout'=>90,  
+          )  );  
+    
+         $context = stream_context_create($opts);  
+
+        $origin_csv = file_get_contents($url,false,$context);
+      
+
+        //$origin_csv = iconv("utf-8", "gb2312//IGNORE",$origin_csv); 
+        $csv = new parseCSV();
+        $csv->delimiter=",";
+        $csv->parse($origin_csv);
+
+       
+        convert_csv($csv,$platform);
+
+        $content = $csv->output("$platform-convert.csv");
+
+        header("Location: index.php"); 
+        
+        
+        exit;   
+     
      } 
      else 
      {
@@ -90,7 +145,7 @@
         require_approval -> 0 (set to the default value) 
 */
      
-function convert_csv(&$csv)
+function convert_csv(&$csv, &$platform)
 {
     $titles = $csv->titles;
     $data = $csv->data;
@@ -136,7 +191,22 @@ function convert_csv(&$csv)
         }
 
         // add additional row
-        $row["advertiser_id"] = "508"; // current all is kingmb
+        
+        if($platform == "kingmobi")
+        {
+        $row["advertiser_id"] = "508"; 
+        }
+        
+        if($platform == "rainyday")
+        {
+        	$row["advertiser_id"] = "502";
+        }
+        
+        if($platform == "avazu")
+        {
+        	$row["advertiser_id"] = "504"; 
+        }
+        
         $row["status"] = "pending";
         $row["revenue_type"] = "cpa_flat";
         if (array_key_exists("max_payout", $row)) {
